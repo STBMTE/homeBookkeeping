@@ -38,7 +38,8 @@ public class RESTController {
 
     @PatchMapping("/account/{id}")
     private void update(@PathVariable("id") Long id, @RequestBody AccountResp response) {
-        accountService.getById(id).get().setAmmount(response.getAmmount());
+        var acs = accountService.getById(id).get();
+        acs.setAmmount(response.getAmmount());
     }
 
     @PostMapping("/account")
@@ -65,12 +66,23 @@ public class RESTController {
 
     @PatchMapping("/account/{id}/transaction/{id1}")
     private void updatet(@PathVariable("id1") Long id, @RequestBody TransactionResp response) {
-        transactionService.deleteTransactionById(id);
+        transactionService.editTransaction(id, response.getDescription().describeConstable());
     }
 
     @PostMapping("/account/{id}/transaction")
     private boolean addTransaction(@PathVariable("id") Long id, @RequestBody TransactionResp response){
-            return transactionService.createTransaction(new TransactionModel(response.getDescription(),
-                    response.getAmmount(), id));
+        var asc = accountService.getById(id).get();
+        var ammount = response.getAmmount();
+        if(ammount.isNaN()){
+            ammount = 0d;
+        }
+        try {
+            ammount += asc.getAmmount();
+        }catch (NullPointerException ex){
+            asc.setAmmount(0d);
+        }
+        asc.setAmmount(ammount);
+        return transactionService.createTransaction(new TransactionModel(response.getDescription(),
+                    ammount, id));
     }
 }

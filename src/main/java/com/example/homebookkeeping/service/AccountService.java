@@ -21,7 +21,15 @@ public class AccountService {
         return accountRepository.findById(id);
     }
 
+    public boolean setUpdate(AccountModel accountModel){
+        accountRepository.save(accountModel);
+        return true;
+    }
+
     public boolean createAccountFromUser(Double ammount){
+        if(ammount.isNaN()){
+            ammount = 0d;
+        }
         accountRepository.save(new AccountModel(ammount));
         return true;
     }

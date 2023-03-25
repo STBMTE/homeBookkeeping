@@ -37,10 +37,8 @@ public class TransactionService {
 
     public boolean editTransaction(Long id, Optional<String> commentTransaction){
         var transaction = getById(id).get();
-        if(!commentTransaction.isEmpty()){
-            transaction.setDescription(commentTransaction.get());
-            return true;
-        }
-        return false;
+        transaction.setDescription(commentTransaction.get());
+        transactionRepository.save(transaction);
+        return true;
     }
 }

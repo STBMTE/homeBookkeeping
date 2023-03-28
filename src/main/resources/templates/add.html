@@ -4,17 +4,30 @@
     <meta charset="UTF-8">
     <title>Добавить</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <a href="/" class="link"><i data-feather="arrow-left" class="plus exit"></i></a>
-<form method="post" class="app">
+<form method="post" class="account">
     <div class="form-field">
         <input id="name" name="name" class="name" placeholder="Начальный баланс">
         <i data-feather="check" class="plus addBtn" id="add"></i>
     </div>
 </form>
-
+<form method="post" class="transaction">
+    <div class="form-field">
+        <input id="idaccaunt" name="idaccaunt" class="idaccaunt" placeholder="Id аккаунта на который совершена транзакция">
+        <input id="description" name="description" class="description" placeholder="Комментарий к транзакции">
+        <input id="ammount" name="ammount" class="ammount" placeholder="Сумма транзакции">
+        <i data-feather="check" class="plus addBtn2" id="add2"></i>
+    </div>
+</form>
+<div class="container">
+    <table id="accounts">
+        <tr>
+            <th>id</th>
+        </tr>
+    </table>
+</div>
 
 </body>
 <script src="https://unpkg.com/feather-icons"></script>

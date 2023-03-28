@@ -60,8 +60,12 @@ public class RESTController {
     }
 
     @DeleteMapping("/account/{id}/transaction/{id1}")
-    private void delete(@PathVariable("id1") Long id) {
-        transactionService.deleteTransactionById(id);
+    private void delete(@PathVariable("id1") Long id1, @PathVariable("id") Long id) {
+        TransactionModel transactionModel = transactionService.getById(id1).get();
+        AccountModel accountModel = accountService.getById(id).get();
+        accountModel.setAmmount(accountModel.getAmmount() - transactionModel.getAmount());
+        accountService.setUpdate(accountModel);
+        transactionService.deleteTransactionById(id1);
     }
 
     @PatchMapping("/account/{id}/transaction/{id1}")

@@ -1,57 +1,58 @@
-$(document).ready(async ()=> {
-
-    const accounts = $('#accounts')
-    const createItem = (json) => {
-        const item = $(`<li class="item-section">
-            <span>${json.ammount}</span>
-        </li>`)
-        const deleteBtn = $(feather.icons['x'].toSvg({ class: 'plus' }))
-        const saleCheck = $(`<input type="text" value="${json.ammount}">`)
-        item.append(saleCheck)
-        item.append(deleteBtn)
-
-        deleteBtn.click(()=>{
-            console.log(json)
-            $.ajax({
-                method: "DELETE",
-                url: `/api/homebokkeeping/${json.AccountId}`,
-                contentType:"application/json",
-                dataType:"json",
-                cache: false,
-            }).done(()=>{
-                item.remove()
-            }).fail(()=>{
-                item.remove()
-            })
-        })
-         .click(()=>{
-            console.log(json)
-            $.ajax({
-                method: "PATCH",
-                url: `/api/homebokkeeping/${json.AccountId}`,
-                contentType:"application/json",
-                dataType:"json",
-                cache: false,
-            }).done(value=>{
-                console.log(value)
-            }).fail(()=>{
-            })
-        })
-        return item;
-    }
-    $.ajax({
+window.onload = async function () {
+    const response = await fetch("/api/homebokkeeping/account", {
         method: "GET",
-        url: "/api/homebokkeeping/account",
-        contentType:"application/json",
-        dataType:"json",
-        cache: false,
-    }).done(value=>{
-            console.log(value, value.length)
-            if(value && value.length){
-                value.forEach(x=>{
-                    console.log(x)
-                    accounts.append(createItem(x))
-                })
+        headers: {"Accept": "application/json", "Content-Type": "application/json"}
+    });
+
+    async function deleted(iddel) {
+        let deletResp = await fetch("/api/homebokkeeping/account/" + iddel, {
+            method: "DELETE",
+            headers: {"Accept": "application/json", "Content-Type": "application/json"}
+        });
+    }
+
+    console.log(response);
+    console.log(response.ok);
+    if (response.ok === true) {
+        let accounts = await response.json();
+        console.log(accounts);
+
+        for (let account of accounts) {
+            add_elem(account);
+        }
+    }
+
+    function add_elem(account) {
+        let addr = "/api/homebokkeeping/account/" + account.accountId;
+        let accounts = document.getElementById("accounts");
+        let row = document.createElement("tr");
+        let desc = document.createElement("td");
+        let link = document.createElement("a");
+        let delet = document.createElement("td");
+        let button = document.createElement("button");
+        desc.innerHTML = account.ammount;
+        link.setAttribute("href", addr);
+        link.appendChild(desc);
+        row.appendChild(link);
+        button.innerHTML = "Delete";
+        button.addEventListener("click", function() {
+            deleted(account.accountId);
+        });
+        delet.appendChild(button);
+        row.appendChild(delet);
+        accounts.appendChild(row);
+    }
+
+    $("#deleteBtn").click(function() {
+        $.ajax({
+            url: "/api/homebokkeeping/account/" + accountId,
+            type: "DELETE",
+            success: function(response) {
+                console.log("success")
+            },
+            error: function(xhr) {
+                console.log("error")
             }
-        })
-})
+        });
+    });
+}
